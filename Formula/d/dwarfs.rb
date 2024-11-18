@@ -4,6 +4,7 @@ class Dwarfs < Formula
   url "https://github.com/mhx/dwarfs/releases/download/v0.10.2/dwarfs-0.10.2.tar.xz"
   sha256 "36767290a39f92782e41daaa3eb45e39550ad1a4294a6d8365bc0f456f75f00c"
   license "GPL-3.0-or-later"
+  revision 1
 
   livecheck do
     url :stable
@@ -83,7 +84,7 @@ class Dwarfs < Formula
     end
 
     system "cmake", "-S", ".", "-B", "build", *args, *std_cmake_args
-    system "cmake", "--build", "build", "--parallel"
+    system "cmake", "--build", "build"
     system "cmake", "--install", "build"
   end
 
