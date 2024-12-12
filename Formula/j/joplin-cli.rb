@@ -1,8 +1,8 @@
 class JoplinCli < Formula
   desc "Note taking and to-do application with synchronization capabilities"
   homepage "https://joplinapp.org/"
-  url "https://registry.npmjs.org/joplin/-/joplin-3.0.1.tgz"
-  sha256 "86217bd4b98a6a9e6b31ee3c716f6f83e2b90ff600bc436b47a428842494b5d4"
+  url "https://registry.npmjs.org/joplin/-/joplin-3.2.2.tgz"
+  sha256 "46cda9164f1e20c2ea451fa12398532fbbeb421a9bcdf275ac220f4163f75da5"
   license "MIT"
 
   bottle do
@@ -18,6 +18,7 @@ class JoplinCli < Formula
   depends_on "pkgconf" => :build
   depends_on "python-setuptools" => :build # for node-gyp
   depends_on "python@3.13" => :build
+  depends_on "cfitsio" # for node-gyp
   depends_on "glib"
   depends_on "node"
   depends_on "sqlite"
