@@ -1,8 +1,8 @@
 class WebtorrentCli < Formula
   desc "Command-line streaming torrent client"
   homepage "https://webtorrent.io/"
-  url "https://registry.npmjs.org/webtorrent-cli/-/webtorrent-cli-4.1.0.tgz"
-  sha256 "3b7bac7470e65540e45ed92b8b8d70008bbeca36bf96e81318c15bb9dee8b942"
+  url "https://registry.npmjs.org/webtorrent-cli/-/webtorrent-cli-5.1.3.tgz"
+  sha256 "54a53ecdacbccf0f6855bd4ef18f4f154576f8346e3b7aef3792b66dd5aaaa1b"
   license "MIT"
 
   bottle do
@@ -19,17 +19,40 @@ class WebtorrentCli < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:   "5b87f6ede3b7fa60052d477c30c12c72f2cf0d2c50223376d05579c5f43e7ee1"
   end
 
+  depends_on "cmake" => :build
+  depends_on "ninja" => :build
   depends_on "node"
 
   def install
     system "npm", "install", *std_npm_args
     bin.install_symlink Dir["#{libexec}/bin/*"]
 
+    nm = libexec/"lib/node_modules/webtorrent-cli/node_modules"
+
+    # Avoid references to the Homebrew shims directory
+    sb = nm/"node-datachannel/build"
+    shims_references = Dir[
+      sb/"CMakeFiles/CMakeConfigureLog.yaml",
+      sb/"CMakeFiles/rules.ninja",
+      sb/"CMakeFiles/3.31.2/CMakeCXXCompiler.cmake",
+      sb/"CMakeFiles/3.31.2/CMakeCCompiler.cmake",
+      sb/"_deps/libdatachannel-subbuild/CMakeLists.txt",
+      sb/"_deps/libdatachannel-subbuild/libdatachannel-populate-prefix/tmp/libdatachannel-populate-gitclone.cmake",
+      sb/"_deps/libdatachannel-subbuild/libdatachannel-populate-prefix/tmp/libdatachannel-populate-gitupdate.cmake",
+      sb/"CMakeCache.txt",
+    ].select { |f| File.file? f }
+    inreplace shims_references,
+              Superenv.shims_path.to_s,
+              "<**Reference to the Homebrew shims directory**>",
+              audit_result: false
+
     # Remove incompatible pre-built binaries
     os = OS.kernel_name.downcase
     arch = Hardware::CPU.intel? ? "x64" : Hardware::CPU.arch.to_s
-    libexec.glob("lib/node_modules/webtorrent-cli/node_modules/{bufferutil,utp-native,utf-8-validate}/prebuilds/*")
-           .each { |dir| rm_r(dir) if dir.basename.to_s != "#{os}-#{arch}" }
+    libexec.glob(nm/"{bare-fs,bare-os,bufferutil,fs-native-extensions,utp-native,utf-8-validate}/prebuilds/*")
+           .each do |dir|
+      rm_r(dir) if dir.basename.to_s != "#{os}-#{arch}"
+    end
   end
 
   test do
