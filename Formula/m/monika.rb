@@ -1,8 +1,8 @@
 class Monika < Formula
   desc "Synthetic monitoring made easy"
   homepage "https://monika.hyperjump.tech"
-  url "https://registry.npmjs.org/@hyperjumptech/monika/-/monika-1.21.1.tgz"
-  sha256 "f0f87ce40c771b2b7b4c723ddec41200bf180ff788138559dad0cf4fd731d6b6"
+  url "https://registry.npmjs.org/@hyperjumptech/monika/-/monika-1.21.2.tgz"
+  sha256 "a9280ac4c288a79c77c28263042fab1d4cc785ef08f94d0cfd3cb25b7e40dce4"
   license "MIT"
 
   bottle do
